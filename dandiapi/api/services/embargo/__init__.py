@@ -76,7 +76,6 @@ def unembargo_dandiset(ds: Dandiset, user: User):
     logger.info('Version metadata validated')
 
     # Create a Draft DOI now that the dandiset is public
-    # Reuse the same function used for dandiset creation
     try:
         _create_dandiset_draft_doi(v)
         logger.info('Draft DOI created for unembargoed dandiset')
