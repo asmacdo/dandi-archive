@@ -138,7 +138,7 @@ class VersionViewSet(NestedViewSetMixin, DetailSerializerMixin, ReadOnlyModelVie
 
                 # For unpublished dandisets, update or create the draft DOI
                 # to keep it in sync with the latest metadata
-                if locked_version.dandiset.embargoed:
+                if not locked_version.dandiset.embargoed:
                     try:
                         update_draft_doi(locked_version)
                     except ValueError:
