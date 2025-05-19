@@ -7,6 +7,7 @@ The public interface is exposed through doi.py.
 
 from __future__ import annotations
 
+import copy
 import logging
 from typing import TYPE_CHECKING
 
@@ -35,7 +36,9 @@ class DataCiteClient:
         self.api_url = settings.DANDI_DOI_API_URL
         self.api_user = settings.DANDI_DOI_API_USER
         self.api_password = settings.DANDI_DOI_API_PASSWORD
-        self.api_prefix = settings.DANDI_DOI_API_PREFIX or '10.80507'
+        # TODO(review) I've removed or '10.80507'
+        # IMO we want this to be set by env vars, even in tests and never default
+        self.api_prefix = settings.DANDI_DOI_API_PREFIX
         self.auth = requests.auth.HTTPBasicAuth(self.api_user, self.api_password)
         self.headers = {'Accept': 'application/vnd.api+json'}
         self.timeout = 30
@@ -57,6 +60,8 @@ class DataCiteClient:
             Formatted DOI string.
         """
         if version_id:
+            # TODO(asmaco) replace "dandi" with non-hardcoded ID_PATTERN
+            # https://github.com/dandi/dandi-schema/pull/294/files#diff-43c9cc813638d87fd33e527a7baccb2fd7dff85595a7e686bfaf61f0409bd403R47
             return f'{self.api_prefix}/dandi.{dandiset_id}/{version_id}'
         return f'{self.api_prefix}/dandi.{dandiset_id}'
 
@@ -81,7 +86,7 @@ class DataCiteClient:
         from dandischema.datacite import to_datacite
         dandiset_id = version.dandiset.identifier
         version_id = version.version
-        metadata = version.metadata.copy()  # Create a copy to avoid modifying the original
+        metadata = copy.deepcopy(version.metadata)
 
         # Generate the appropriate DOI string
         if version_doi:
@@ -98,7 +103,7 @@ class DataCiteClient:
 
         return (doi, datacite_payload)
 
-    def create_or_update_doi(self, datacite_payload: dict) -> str | None:
+    def create_or_update_doi(self, original_datacite_payload: dict) -> str | None:
         """
         Create or update a DOI with the DataCite API.
 
@@ -111,6 +116,7 @@ class DataCiteClient:
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
         """
+        datacite_payload = copy.deepcopy(original_datacite_payload)
         doi = datacite_payload['data']['attributes']['doi']
 
         if not self.is_configured():
