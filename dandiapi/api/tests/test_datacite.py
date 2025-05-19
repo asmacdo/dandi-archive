@@ -260,51 +260,51 @@ def test_create_or_update_doi_put_error(datacite_client, mock_requests, mocker):
     mock_logger.exception.assert_called_once()
 
 
-# def test_delete_or_hide_doi_not_configured(datacite_client, mock_requests, mocker):
-#     """Test delete_or_hide_doi when API is not configured."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=False)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify no HTTP methods were called
-#     assert not mock_requests.get.called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.put.called
-#     assert not mock_requests.delete.called
-#     mock_logger.warning.assert_called_once()
-#
-#
-# def test_delete_or_hide_doi_draft(datacite_client, mock_requests, mocker):
-#     """Test deleting a draft DOI."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock GET to return a draft DOI
-#     mock_get_response = mocker.Mock()
-#     mock_get_response.json.return_value = {
-#         'data': {'attributes': {'state': 'draft'}}
-#     }
-#     mock_get_response.raise_for_status = mocker.Mock()
-#     mock_requests.get.return_value = mock_get_response
-#
-#     # Mock DELETE to succeed
-#     mock_delete_response = mocker.Mock()
-#     mock_delete_response.raise_for_status = mocker.Mock()
-#     mock_requests.delete.return_value = mock_delete_response
-#
-#     datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify GET and DELETE were called
-#     assert mock_requests.get.called
-#     assert mock_requests.delete.called
-#     assert '10.12345/test' in mock_requests.delete.call_args[0][0]
-#     # Verify no other HTTP methods were called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.put.called
-#     mock_logger.info.assert_called_once()
-#
-#
+def test_delete_or_hide_doi_not_configured(datacite_client, mock_requests, mocker):
+    """Test delete_or_hide_doi when API is not configured."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=False)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify no HTTP methods were called
+    assert not mock_requests.get.called
+    assert not mock_requests.post.called
+    assert not mock_requests.put.called
+    assert not mock_requests.delete.called
+    mock_logger.warning.assert_called_once()
+
+
+def test_delete_or_hide_doi_draft(datacite_client, mock_requests, mocker):
+    """Test deleting a draft DOI."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock GET to return a draft DOI
+    mock_get_response = mocker.Mock()
+    mock_get_response.json.return_value = {
+        'data': {'attributes': {'state': 'draft'}}
+    }
+    mock_get_response.raise_for_status = mocker.Mock()
+    mock_requests.get.return_value = mock_get_response
+
+    # Mock DELETE to succeed
+    mock_delete_response = mocker.Mock()
+    mock_delete_response.raise_for_status = mocker.Mock()
+    mock_requests.delete.return_value = mock_delete_response
+
+    datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify GET and DELETE were called
+    assert mock_requests.get.called
+    assert mock_requests.delete.called
+    assert '10.12345/test' in mock_requests.delete.call_args[0][0]
+    # Verify no other HTTP methods were called
+    assert not mock_requests.post.called
+    assert not mock_requests.put.called
+    mock_logger.info.assert_called_once()
+
+
 # def test_delete_or_hide_doi_findable_publish_enabled(datacite_client, mock_requests, mocker):
 #     """Test hiding a findable DOI when DANDI_DOI_PUBLISH is True."""
 #     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
