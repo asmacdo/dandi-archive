@@ -4,7 +4,7 @@ import logging
 
 from django.db import transaction
 
-from dandiapi.api import datacite
+from dandiapi.api import doi
 from dandiapi.api.models.dandiset import Dandiset, DandisetStar
 from dandiapi.api.models.version import Version
 from dandiapi.api.services import audit
@@ -83,14 +83,14 @@ def _create_dandiset_draft_doi(draft_version: Version) -> None:
         draft_version: The draft version of the dandiset.
     """
     # Generate a Draft DOI (event=None)
-    dandiset_doi, dandiset_doi_payload = datacite.generate_doi_data(
+    dandiset_doi, dandiset_doi_payload = doi.generate_doi_data(
         draft_version,
         version_doi=False,
         event=None,  # Draft DOI
     )
 
     # Create the DOI
-    datacite.create_or_update_doi(dandiset_doi_payload)
+    doi.create_or_update_doi(dandiset_doi_payload)
 
     # Store the DOI in the draft version
     draft_version.doi = dandiset_doi
@@ -117,7 +117,7 @@ def delete_dandiset(*, user, dandiset: Dandiset) -> None:
         # Record the audit event first so that the AuditRecord instance has a
         # chance to grab the Dandiset information before it is destroyed.
         audit.delete_dandiset(dandiset=dandiset, user=user)
-        datacite.delete_or_hide_doi(draft_version.doi)
+        doi.delete_or_hide_doi(draft_version.doi)
         dandiset.versions.all().delete()
         dandiset.delete()
 
@@ -173,14 +173,14 @@ def update_draft_doi(draft_version: Version) -> None:
         return
 
     # Generate DOI payload with updated metadata
-    dandiset_doi, dandiset_doi_payload = datacite.generate_doi_data(
+    dandiset_doi, dandiset_doi_payload = doi.generate_doi_data(
         draft_version,
         version_doi=False,  # Generate a Dandiset DOI, not a Version DOI
         event=None,  # Keep as Draft DOI
     )
 
     # Create or update the DOI
-    datacite.create_or_update_doi(dandiset_doi_payload)
+    doi.create_or_update_doi(dandiset_doi_payload)
 
     # If the version doesn't have a DOI yet, store it
     if draft_version.doi is None:

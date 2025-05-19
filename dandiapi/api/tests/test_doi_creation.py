@@ -25,7 +25,7 @@ def test_create_and_update_dois_first_publication(draft_version_factory, mocker)
     published_version.save()
 
     # Mock the DOI functions
-    mock_generate_doi_data = mocker.patch('dandiapi.api.datacite.generate_doi_data')
+    mock_generate_doi_data = mocker.patch('dandiapi.api.doi.generate_doi_data')
     mock_generate_doi_data.side_effect = [
         # Version DOI with publish event
         (f'10.80507/dandi.{draft_version.dandiset.identifier}/1.0.0', {'data': {'attributes': {}}}),
@@ -33,7 +33,7 @@ def test_create_and_update_dois_first_publication(draft_version_factory, mocker)
         (f'10.80507/dandi.{draft_version.dandiset.identifier}', {'data': {'attributes': {}}}),
     ]
 
-    mock_create_or_update_doi = mocker.patch('dandiapi.api.datacite.create_or_update_doi')
+    mock_create_or_update_doi = mocker.patch('dandiapi.api.doi.create_or_update_doi')
 
     # Run the function
     with transaction.atomic():
@@ -77,7 +77,7 @@ def test_create_and_update_dois_subsequent_publication(draft_version_factory, mo
     published_version.save()
 
     # Mock the DOI functions
-    mock_generate_doi_data = mocker.patch('dandiapi.api.datacite.generate_doi_data')
+    mock_generate_doi_data = mocker.patch('dandiapi.api.doi.generate_doi_data')
     mock_generate_doi_data.side_effect = [
         # Version DOI with publish event
         (f'10.80507/dandi.{draft_version.dandiset.identifier}/2.0.0', {'data': {'attributes': {}}}),
@@ -85,7 +85,7 @@ def test_create_and_update_dois_subsequent_publication(draft_version_factory, mo
         (existing_doi, {'data': {'attributes': {}}}),
     ]
 
-    mock_create_or_update_doi = mocker.patch('dandiapi.api.datacite.create_or_update_doi')
+    mock_create_or_update_doi = mocker.patch('dandiapi.api.doi.create_or_update_doi')
 
     # Run the function
     with transaction.atomic():

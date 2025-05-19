@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from more_itertools import ichunked
 
-from dandiapi.api import datacite
+from dandiapi.api import doi
 from dandiapi.api.asset_paths import add_version_asset_paths
 from dandiapi.api.models import Asset, Dandiset, Version
 from dandiapi.api.services import audit
@@ -199,29 +199,29 @@ def _publish_dandiset(dandiset_id: int, user_id: int) -> None:
             is_first_publication = draft_version.doi is None
 
             # Create Version DOI as Findable
-            version_doi, version_doi_payload = datacite.generate_doi_data(
+            version_doi, version_doi_payload = doi.generate_doi_data(
                 version, version_doi=True, event='publish'
             )
 
             # Either create or update the Dandiset DOI based on whether it's the first publication
             if is_first_publication:
                 # For first publication: generate Dandiset DOI and promote from Draft to Findable
-                dandiset_doi, dandiset_doi_payload = datacite.generate_doi_data(
+                dandiset_doi, dandiset_doi_payload = doi.generate_doi_data(
                     version,
                     version_doi=False,
                     event='publish',  # Promote to Findable on first publication
                 )
             else:
                 # For subsequent publications: update the metadata but keep as Findable
-                dandiset_doi, dandiset_doi_payload = datacite.generate_doi_data(
+                dandiset_doi, dandiset_doi_payload = doi.generate_doi_data(
                     version,
                     version_doi=False,
                     event='publish',  # Update existing Findable DOI
                 )
 
             # Create or update the DOIs
-            datacite.create_or_update_doi(dandiset_doi_payload)
-            datacite.create_or_update_doi(version_doi_payload)
+            doi.create_or_update_doi(dandiset_doi_payload)
+            doi.create_or_update_doi(version_doi_payload)
 
             # Store the DOI values
             version.doi = version_doi

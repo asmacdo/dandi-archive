@@ -1,3 +1,10 @@
+"""
+DataCite API client implementation.
+
+This module provides the implementation details for interacting with the DataCite API.
+The public interface is exposed through doi.py.
+"""
+
 from __future__ import annotations
 
 import logging
@@ -10,13 +17,13 @@ if TYPE_CHECKING:
     from dandiapi.api.models import Version
 
 # All of the required DOI configuration settings
+# Cannot be in doi.py to avoid circular imports
 DANDI_DOI_SETTINGS = [
     (settings.DANDI_DOI_API_URL, 'DANDI_DOI_API_URL'),
     (settings.DANDI_DOI_API_USER, 'DANDI_DOI_API_USER'),
     (settings.DANDI_DOI_API_PASSWORD, 'DANDI_DOI_API_PASSWORD'),
     (settings.DANDI_DOI_API_PREFIX, 'DANDI_DOI_API_PREFIX'),
 ]
-
 
 logger = logging.getLogger(__name__)
 
@@ -231,21 +238,3 @@ class DataCiteClient:
             raise
 
 
-# Singleton instance
-datacite_client = DataCiteClient()
-
-
-def generate_doi_data(
-    version: Version, version_doi: bool = True, event: str | None = None
-) -> tuple[str, dict]:
-    """Generate DOI data for a version or dandiset."""
-    return datacite_client.generate_doi_data(version, version_doi, event)
-
-
-def create_or_update_doi(datacite_payload: dict) -> str | None:
-    """Create or update a DOI with the DataCite API."""
-    return datacite_client.create_or_update_doi(datacite_payload)
-
-def delete_or_hide_doi(doi: str) -> None:
-    """Delete a draft DOI or hide a findable DOI depending on its state."""
-    datacite_client.delete_or_hide_doi(doi)
