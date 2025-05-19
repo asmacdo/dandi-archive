@@ -163,16 +163,18 @@ class DataCiteClient:
                     # Success with update
                     return doi
                 except Exception:
-                    logger.exception('Failed to update existing DOI %s', doi)
-                    logger.exception(datacite_payload)
-                    if e.response:
-                        logger.exception(e.response.text)
+                    error_details = f'Failed to update existing DOI {doi}'
+                    if e.response and hasattr(e.response, 'text'):
+                        error_details += f'\nResponse: {e.response.text}'
+                    error_details += f'\nPayload: {datacite_payload}'
+                    logger.exception(error_details)
                     raise
             else:
-                logger.exception('Failed to create DOI %s', doi)
-                logger.exception(datacite_payload)
-                if e.response:
-                    logger.exception(e.response.text)
+                error_details = f'Failed to create DOI {doi}'
+                if e.response and hasattr(e.response, 'text'):
+                    error_details += f'\nResponse: {e.response.text}'
+                error_details += f'\nPayload: {datacite_payload}'
+                logger.exception(error_details)
                 raise
 
     def delete_or_hide_doi(self, doi: str) -> None:

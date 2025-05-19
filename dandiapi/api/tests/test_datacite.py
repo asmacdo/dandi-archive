@@ -220,46 +220,46 @@ def test_create_or_update_doi_post_error(datacite_client, mock_requests, mocker)
         datacite_client.create_or_update_doi(payload)
 
     # Verify logger was called
-    assert mock_logger.exception.call_count == 3
+    mock_logger.exception.assert_called_once()
     # Verify no other HTTP methods were called
     assert not mock_requests.get.called
     assert not mock_requests.put.called
     assert not mock_requests.delete.called
 
 
-# def test_create_or_update_doi_put_error(datacite_client, mock_requests, mocker):
-#     """Test error handling when PUT fails."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock POST to fail with 422 (already exists)
-#     mock_post_response = mocker.Mock()
-#     http_error = HTTPError("DOI already exists")
-#     http_error.response = mocker.Mock()
-#     http_error.response.status_code = 422
-#     mock_post_response.raise_for_status.side_effect = http_error
-#     mock_requests.post.return_value = mock_post_response
-#
-#     # Mock PUT to fail
-#     put_error = HTTPError("Update failed")
-#     put_error.response = mocker.Mock()
-#     put_error.response.text = "Update failed"
-#     mock_requests.put.side_effect = put_error
-#
-#     payload = {'data': {'attributes': {'doi': '10.12345/test'}}}
-#     with pytest.raises(HTTPError):
-#         datacite_client.create_or_update_doi(payload)
-#
-#     # Verify both methods were called in the right order
-#     assert mock_requests.post.called
-#     assert mock_requests.put.called
-#     # Verify no other HTTP methods were called
-#     assert not mock_requests.get.called
-#     assert not mock_requests.delete.called
-#     # Verify logger was called
-#     assert mock_logger.exception.call_count >= 2
-#
-#
+def test_create_or_update_doi_put_error(datacite_client, mock_requests, mocker):
+    """Test error handling when PUT fails."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock POST to fail with 422 (already exists)
+    mock_post_response = mocker.Mock()
+    http_error = HTTPError("DOI already exists")
+    http_error.response = mocker.Mock()
+    http_error.response.status_code = 422
+    mock_post_response.raise_for_status.side_effect = http_error
+    mock_requests.post.return_value = mock_post_response
+
+    # Mock PUT to fail
+    put_error = HTTPError("Update failed")
+    put_error.response = mocker.Mock()
+    put_error.response.text = "Update failed"
+    mock_requests.put.side_effect = put_error
+
+    payload = {'data': {'attributes': {'doi': '10.12345/test'}}}
+    with pytest.raises(HTTPError):
+        datacite_client.create_or_update_doi(payload)
+
+    # Verify both methods were called in the right order
+    assert mock_requests.post.called
+    assert mock_requests.put.called
+    # Verify no other HTTP methods were called
+    assert not mock_requests.get.called
+    assert not mock_requests.delete.called
+    # Verify logger was called
+    mock_logger.exception.assert_called_once()
+
+
 # def test_delete_or_hide_doi_not_configured(datacite_client, mock_requests, mocker):
 #     """Test delete_or_hide_doi when API is not configured."""
 #     mocker.patch.object(datacite_client, 'is_configured', return_value=False)
