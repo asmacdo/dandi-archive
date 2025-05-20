@@ -142,7 +142,7 @@ class VersionViewSet(NestedViewSetMixin, DetailSerializerMixin, ReadOnlyModelVie
                     try:
                         update_draft_version_doi(locked_version)
                     except ValueError:
-                        logger.exception('Failed to update Draft DOI for dandiset %s', dandiset.identifier)
+                        logger.exception('Failed to update Draft DOI for dandiset %s', locked_version.dandiset.identifier)
                 else:
                     logger.debug("Skipping DOI update for embargoed Dandiset %s.",
                                  locked_version.dandiset.identifier)
