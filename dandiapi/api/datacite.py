@@ -36,8 +36,6 @@ class DataCiteClient:
         self.api_url = settings.DANDI_DOI_API_URL
         self.api_user = settings.DANDI_DOI_API_USER
         self.api_password = settings.DANDI_DOI_API_PASSWORD
-        # TODO(review) I've removed or '10.80507'
-        # IMO we want this to be set by env vars, even in tests and never default
         self.api_prefix = settings.DANDI_DOI_API_PREFIX
         self.auth = requests.auth.HTTPBasicAuth(self.api_user, self.api_password)
         self.headers = {'Accept': 'application/vnd.api+json'}
