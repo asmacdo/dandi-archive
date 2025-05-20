@@ -163,7 +163,7 @@ def unstar_dandiset(*, user, dandiset: Dandiset) -> int:
     return dandiset.star_count
 
 
-def update_draft_doi(draft_version: Version) -> None:
+def update_draft_version_doi(draft_version: Version) -> None:
     """
     Update or create a Draft DOI for a dandiset with the latest metadata.
 

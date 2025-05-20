@@ -8,7 +8,7 @@ import pytest
 
 from dandiapi.api.asset_paths import add_asset_paths, add_version_asset_paths
 from dandiapi.api.models import Dandiset, Version
-from dandiapi.api.services.dandiset import _create_dandiset_draft_doi, update_draft_doi
+from dandiapi.api.services.dandiset import _create_dandiset_draft_doi, update_draft_version_doi
 from dandiapi.api.services.permissions.dandiset import (
     add_dandiset_owner,
     get_dandiset_owners,
@@ -1389,7 +1389,7 @@ def test__create_dandiset_draft_doi(draft_version, mocker):
 
 
 @pytest.mark.django_db
-def test_update_draft_doi_no_previous_doi(draft_version, mocker):
+def test_update_draft_version_doi_no_previous_doi(draft_version, mocker):
     """Test updating a draft DOI when none exists yet."""
     # Set up mocks
     mock_generate_doi = mocker.patch('dandiapi.api.doi.generate_doi_data')
@@ -1398,7 +1398,7 @@ def test_update_draft_doi_no_previous_doi(draft_version, mocker):
     mock_create_doi = mocker.patch('dandiapi.api.doi.create_or_update_doi')
     mock_create_doi.return_value = '10.48324/dandi.000123'
 
-    update_draft_doi(draft_version)
+    update_draft_version_doi(draft_version)
 
     # Verify the mocks were called correctly
     mock_generate_doi.assert_called_once_with(
@@ -1413,7 +1413,7 @@ def test_update_draft_doi_no_previous_doi(draft_version, mocker):
 
 
 @pytest.mark.django_db
-def test_update_draft_doi_existing_doi(draft_version, mocker):
+def test_update_draft_version_doi_existing_doi(draft_version, mocker):
     """Test updating a draft DOI when one already exists."""
     # Set existing DOI
     draft_version.doi = '10.48324/dandi.000123'
@@ -1426,7 +1426,7 @@ def test_update_draft_doi_existing_doi(draft_version, mocker):
     mock_create_doi = mocker.patch('dandiapi.api.doi.create_or_update_doi')
     mock_create_doi.return_value = '10.48324/dandi.000123'
 
-    update_draft_doi(draft_version)
+    update_draft_version_doi(draft_version)
 
     # Verify the mocks were called correctly
     mock_generate_doi.assert_called_once_with(
@@ -1441,13 +1441,13 @@ def test_update_draft_doi_existing_doi(draft_version, mocker):
 
 
 @pytest.mark.django_db
-def test_update_draft_doi_published_version(draft_version, published_version, mocker):
-    """Test that update_draft_doi is a no-op for dandisets with published versions."""
+def test_update_draft_version_doi_published_version(draft_version, published_version, mocker):
+    """Test that update_draft_version_doi is a no-op for dandisets with published versions."""
     # Set up mocks
     mock_generate_doi = mocker.patch('dandiapi.api.doi.generate_doi_data')
     mock_create_doi = mocker.patch('dandiapi.api.doi.create_or_update_doi')
 
-    update_draft_doi(draft_version)
+    update_draft_version_doi(draft_version)
 
     # Verify no DOI operations were performed
     mock_generate_doi.assert_not_called()
