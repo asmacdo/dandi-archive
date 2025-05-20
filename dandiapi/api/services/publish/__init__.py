@@ -233,11 +233,11 @@ def _publish_dandiset(dandiset_id: int, user_id: int) -> None:
         new_version.metadata['doi'] = '10.80507/dandi.123456/0.123456.1234'
 
         validate(new_version.metadata, schema_key='PublishedDandiset', json_validation=True)
-        _handle_publication_dois(new_version.id)
 
         # Write updated manifest files and create DOI after
         # published version has been committed to DB.
         transaction.on_commit(lambda: write_manifest_files.delay(new_version.id))
+        transaction.on_commit(lambda: _handle_publication_dois.delay(new_version.id))
 
 
         user = User.objects.get(id=user_id)
