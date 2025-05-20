@@ -82,7 +82,7 @@ class DataCiteClient:
         Returns:
             Tuple of (doi_string, datacite_payload)
         """
-        # TODO(asmacdo) if not datacite configured
+        # TODO(asmacdo) if not datacite configured make sure we dont save any dois to model
         from dandischema.datacite import to_datacite
         dandiset_id = version.dandiset.identifier
         version_id = version.version
