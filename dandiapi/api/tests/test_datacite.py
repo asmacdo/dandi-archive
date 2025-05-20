@@ -305,101 +305,101 @@ def test_delete_or_hide_doi_draft(datacite_client, mock_requests, mocker):
     mock_logger.info.assert_called_once()
 
 
-# def test_delete_or_hide_doi_findable_publish_enabled(datacite_client, mock_requests, mocker):
-#     """Test hiding a findable DOI when DANDI_DOI_PUBLISH is True."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mocker.patch.object(settings, 'DANDI_DOI_PUBLISH', True)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock GET to return a findable DOI
-#     mock_get_response = mocker.Mock()
-#     mock_get_response.json.return_value = {
-#         'data': {'attributes': {'state': 'findable'}}
-#     }
-#     mock_get_response.raise_for_status = mocker.Mock()
-#     mock_requests.get.return_value = mock_get_response
-#
-#     # Mock PUT to succeed
-#     mock_put_response = mocker.Mock()
-#     mock_put_response.raise_for_status = mocker.Mock()
-#     mock_requests.put.return_value = mock_put_response
-#
-#     datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify GET and PUT were called, but not other methods
-#     assert mock_requests.get.called
-#     assert mock_requests.put.called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.delete.called
-#
-#     # Verify correct parameters
-#     assert '10.12345/test' in mock_requests.put.call_args[0][0]
-#     assert mock_requests.put.call_args[1]['json']['data']['attributes']['event'] == 'hide'
-#     mock_logger.info.assert_called_once()
-#
-#
-# def test_delete_or_hide_doi_findable_publish_disabled(datacite_client, mock_requests, mocker):
-#     """Test not hiding a findable DOI when DANDI_DOI_PUBLISH is False."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mocker.patch.object(settings, 'DANDI_DOI_PUBLISH', False)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock GET to return a findable DOI
-#     mock_get_response = mocker.Mock()
-#     mock_get_response.json.return_value = {
-#         'data': {'attributes': {'state': 'findable'}}
-#     }
-#     mock_get_response.raise_for_status = mocker.Mock()
-#     mock_requests.get.return_value = mock_get_response
-#
-#     datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify only GET was called, but no other methods
-#     assert mock_requests.get.called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.put.called
-#     assert not mock_requests.delete.called
-#     mock_logger.warning.assert_called_once()
-#
-#
-# def test_delete_or_hide_doi_nonexistent(datacite_client, mock_requests, mocker):
-#     """Test handling a nonexistent DOI."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock GET to fail with 404
-#     get_error = HTTPError("Not found")
-#     get_error.response = mocker.Mock()
-#     get_error.response.status_code = 404
-#     mock_requests.get.side_effect = get_error
-#
-#     datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify only GET was attempted, but no other methods
-#     assert mock_requests.get.called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.put.called
-#     assert not mock_requests.delete.called
-#     mock_logger.warning.assert_called_once()
-#
-#
-# def test_delete_or_hide_doi_get_error(datacite_client, mock_requests, mocker):
-#     """Test error handling when GET fails with non-404 error."""
-#     mocker.patch.object(datacite_client, 'is_configured', return_value=True)
-#     mock_logger = mocker.patch('dandiapi.api.datacite.logger')
-#
-#     # Mock GET to fail with 500
-#     get_error = HTTPError("Server error")
-#     get_error.response = mocker.Mock()
-#     get_error.response.status_code = 500
-#     mock_requests.get.side_effect = get_error
-#
-#     with pytest.raises(HTTPError):
-#         datacite_client.delete_or_hide_doi('10.12345/test')
-#
-#     # Verify only GET was attempted, but no other methods
-#     assert mock_requests.get.called
-#     assert not mock_requests.post.called
-#     assert not mock_requests.put.called
-#     assert not mock_requests.delete.called
-#     mock_logger.exception.assert_called_once()
+def test_delete_or_hide_doi_findable_publish_enabled(datacite_client, mock_requests, mocker):
+    """Test hiding a findable DOI when DANDI_DOI_PUBLISH is True."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mocker.patch.object(settings, 'DANDI_DOI_PUBLISH', True)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock GET to return a findable DOI
+    mock_get_response = mocker.Mock()
+    mock_get_response.json.return_value = {
+        'data': {'attributes': {'state': 'findable'}}
+    }
+    mock_get_response.raise_for_status = mocker.Mock()
+    mock_requests.get.return_value = mock_get_response
+
+    # Mock PUT to succeed
+    mock_put_response = mocker.Mock()
+    mock_put_response.raise_for_status = mocker.Mock()
+    mock_requests.put.return_value = mock_put_response
+
+    datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify GET and PUT were called, but not other methods
+    assert mock_requests.get.called
+    assert mock_requests.put.called
+    assert not mock_requests.post.called
+    assert not mock_requests.delete.called
+
+    # Verify correct parameters
+    assert '10.12345/test' in mock_requests.put.call_args[0][0]
+    assert mock_requests.put.call_args[1]['json']['data']['attributes']['event'] == 'hide'
+    mock_logger.info.assert_called_once()
+
+
+def test_delete_or_hide_doi_findable_publish_disabled(datacite_client, mock_requests, mocker):
+    """Test not hiding a findable DOI when DANDI_DOI_PUBLISH is False."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mocker.patch.object(settings, 'DANDI_DOI_PUBLISH', False)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock GET to return a findable DOI
+    mock_get_response = mocker.Mock()
+    mock_get_response.json.return_value = {
+        'data': {'attributes': {'state': 'findable'}}
+    }
+    mock_get_response.raise_for_status = mocker.Mock()
+    mock_requests.get.return_value = mock_get_response
+
+    datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify only GET was called, but no other methods
+    assert mock_requests.get.called
+    assert not mock_requests.post.called
+    assert not mock_requests.put.called
+    assert not mock_requests.delete.called
+    mock_logger.warning.assert_called_once()
+
+
+def test_delete_or_hide_doi_nonexistent(datacite_client, mock_requests, mocker):
+    """Test handling a nonexistent DOI."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock GET to fail with 404
+    get_error = HTTPError("Not found")
+    get_error.response = mocker.Mock()
+    get_error.response.status_code = 404
+    mock_requests.get.side_effect = get_error
+
+    datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify only GET was attempted, but no other methods
+    assert mock_requests.get.called
+    assert not mock_requests.post.called
+    assert not mock_requests.put.called
+    assert not mock_requests.delete.called
+    mock_logger.warning.assert_called_once()
+
+
+def test_delete_or_hide_doi_get_error(datacite_client, mock_requests, mocker):
+    """Test error handling when GET fails with non-404 error."""
+    mocker.patch.object(datacite_client, 'is_configured', return_value=True)
+    mock_logger = mocker.patch('dandiapi.api.datacite.logger')
+
+    # Mock GET to fail with 500
+    get_error = HTTPError("Server error")
+    get_error.response = mocker.Mock()
+    get_error.response.status_code = 500
+    mock_requests.get.side_effect = get_error
+
+    with pytest.raises(HTTPError):
+        datacite_client.delete_or_hide_doi('10.12345/test')
+
+    # Verify only GET was attempted, but no other methods
+    assert mock_requests.get.called
+    assert not mock_requests.post.called
+    assert not mock_requests.put.called
+    assert not mock_requests.delete.called
+    mock_logger.exception.assert_called_once()
